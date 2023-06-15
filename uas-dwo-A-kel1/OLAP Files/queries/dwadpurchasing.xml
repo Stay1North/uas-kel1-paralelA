@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<Schema name="dwadpurchasing">
+<!--
+  == This software is subject to the terms of the Eclipse Public License v1.0
+  == Agreement, available at the following URL:
+  == http://www.eclipse.org/legal/epl-v10.html.
+  == You must accept the terms of that agreement to use this software.
+  ==
+  == Copyright (C) 2000-2005 Julian Hyde
+  == Copyright (C) 2005-2011 Pentaho and others
+  == All Rights Reserved.
+  -->
+
+<!-- Shared dimensions -->
+
+  
+
+<!-- Purchasing -->
+<Cube name="PurchaseStock" defaultMeasure="Amount">
+  <!-- Use annotations to provide translations of this cube's caption and
+       description into German and French. Use of annotations in this manner is
+       experimental and unsupported; just for testing right now. -->
+  
+  <Table name="fakta_purchasingstock"/>
+
+    
+  <Dimension name="Product" foreignKey ="product_id">
+      <Hierarchy hasAll="true" allMemberName="All Products" primaryKey ="product_id" ignoreInvalidMembers="true">
+      <Table name="product"/>
+      <Level name="SubCategory" column="subcategory"/>
+      <Level name="Product" column="name"/>
+      </Hierarchy>
+  </Dimension>
+
+ 
+  <Dimension name="OrderDate" foreignKey="orderdate_id">
+    <Hierarchy hasAll="true" allMemberName="All Dates" primaryKey="orderdate_id">
+      <Table name="orderdate" />
+      <Level name="Year" column="tahun" type="Numeric" uniqueMembers="true" levelType="TimeYears"/>
+      <Level name="Month" column="bulan" uniqueMembers="false" type="Numeric" levelType="TimeMonths"/>
+      <Level name="Date" column="tanggal" uniqueMembers="false" type="Numeric" levelType="TimeDays"/>
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Vendor" foreignKey = "vendor_id">
+    <Hierarchy hasAll="true" allMemberName="All Vendors" primaryKey ="vendor_id">
+      <Table name="vendor" />
+      <Level name="Vendor" column="vendorname"/>
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="ShipMethod" foreignKey = "shipmethod_id">
+    <Hierarchy hasAll="true" allMemberName="All Methods" primaryKey ="shipmethod_id" ignoreInvalidMembers="true">
+      <Table name="shipmethod" />
+      <Level name="ShipMethod" column="shipmethodname"/>
+    </Hierarchy>
+  </Dimension>  
+
+  <Measure name="Stocked Qty" column="StockedQty" aggregator="sum"
+      formatString="Standard"/>
+  <Measure name="Total Due" column="TotalDue" aggregator="sum"
+      formatString="Standard"/>
+  
+  <Measure name="Product Count" column="product_id" aggregator="count"
+      formatString="##,###"/>
+  <Measure name="Vendor Count" column="vendor_id"
+      aggregator="count" formatString="##,###"/>
+ 
+
+</Cube>
+
+
+
+</Schema>
